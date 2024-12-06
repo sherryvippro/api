@@ -8,7 +8,7 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 
 builder.Services.AddControllers();
 
-builder.Services.AddDbContext<QlbanDtContext>(option => option.UseSqlServer(connectionString));
+builder.Services.AddDbContext<PhoneManagement>(option => option.UseSqlServer(connectionString));
 
 builder.Services.AddControllers()
     .AddJsonOptions(options =>

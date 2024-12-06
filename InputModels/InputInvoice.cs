@@ -4,10 +4,10 @@ namespace _api.InputModels
 {
     public class InputInvoice
     {
-        public string SoHdb { get; set; } = null!;
-        public DateTime NgayBan { get; set; }
-        public int MaNguoiDung { get; set; }
-        public decimal TongHdb { get; set; }
-        public ICollection<InputInvoiceDetail> TChiTietHdbs { get; set; } = new List<InputInvoiceDetail>();
+        public string InvoiceId { get; set; } = null!;
+        public DateTime SaleDate { get; set; }
+        public int UserId { get; set; }
+        public decimal TotalPrice { get; set; }
+        public ICollection<InputInvoiceDetail> InvoiceDetails { get; set; } = new List<InputInvoiceDetail>();
     }
 }
