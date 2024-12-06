@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using _api.Models;
 
@@ -11,9 +12,11 @@ using _api.Models;
 namespace _api.Migrations
 {
     [DbContext(typeof(QlbanDtContext))]
-    partial class QlbanDtContextModelSnapshot : ModelSnapshot
+    [Migration("20241206144517_Update_ND_THOADONBAN")]
+    partial class Update_ND_THOADONBAN
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

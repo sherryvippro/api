@@ -36,9 +36,7 @@ public partial class QlbanDtContext : DbContext
 
     public virtual DbSet<TTheLoai> TTheLoais { get; set; }
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseSqlServer("Data Source=DuongHang;Initial Catalog=QLBanDT;Integrated Security=True;Trust Server Certificate=True");
-
+    
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<PhanQuyen>().HasData(
@@ -204,6 +202,7 @@ public partial class QlbanDtContext : DbContext
                 .HasForeignKey(d => d.Idquyen)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Nguoidung_PhanQuyen");
+            entity.HasMany(n => n.THoaDonBans).WithOne(t => t.MaNguoiDungNavigation).HasForeignKey(x => x.MaNguoiDung).IsRequired();
         });
 
         modelBuilder.Entity<PhanQuyen>(entity =>
@@ -297,10 +296,6 @@ public partial class QlbanDtContext : DbContext
                 .HasColumnType("money")
                 .HasColumnName("TongHDB");
 
-            entity.HasOne(d => d.MaNguoiDungNavigation).WithMany(p => p.THoaDonBans)
-                .HasForeignKey(d => d.MaNguoiDung)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_tHoaDonBan_Nguoidung");
             entity.HasMany(t => t.TChiTietHdbs).WithOne(hdb => hdb.SoHdbNavigation).HasForeignKey(x => x.SoHdb).IsRequired();
         });
 

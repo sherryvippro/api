@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using _api.Models;
 using _api.InputModels;
 using System.Net.WebSockets;
+using _api.ViewModel;
 
 namespace _api.Controllers
 {
@@ -24,17 +25,34 @@ namespace _api.Controllers
 
         // GET: api/THoaDonBans
         [HttpGet]
-        public ActionResult<IEnumerable<THoaDonBan>> GetInvoice()
+        public ActionResult<IEnumerable<Invoice>> GetInvoice()
         {
-            var invoices = _context.THoaDonBans.Select(x => new
-                            {
-                                x.SoHdb,
-                                x.MaNguoiDung,
-                                x.NgayBan,
-                                x.TongHdb,
-                                x.TChiTietHdbs
-                            }).ToList();
-            return Ok(invoices);
+            var invoices = _context.THoaDonBans.Include(x => x.MaNguoiDungNavigation).Include(x => x.TChiTietHdbs).ToList();
+            var result = new List<Invoice>();
+            foreach (var invoice in invoices)
+            {
+                var tempInvoice = new Invoice();
+                tempInvoice.SoHdb = invoice.SoHdb;
+                tempInvoice.NgayBan = invoice.NgayBan;
+                tempInvoice.TongHdb = invoice.TongHdb;
+                tempInvoice.HoTen = invoice.MaNguoiDungNavigation.Hoten;
+
+                var invoiceDetails = new List<InvoiceDetail>();
+                foreach(var hdb in invoice.TChiTietHdbs)
+                {
+                    var tempInvoiceDetail = new InvoiceDetail();
+                    var product = _context.TSp.Where(x => x.MaSp == hdb.MaSp).FirstOrDefault();
+                    tempInvoiceDetail.TenSp = product.TenSp;
+                    tempInvoiceDetail.Slban = hdb.Slban;
+                    tempInvoiceDetail.ThanhTien = hdb.ThanhTien;
+                    tempInvoiceDetail.KhuyenMai = hdb.KhuyenMai;
+
+                    invoiceDetails.Add(tempInvoiceDetail);
+                }
+                tempInvoice.TChiTietHdbs = invoiceDetails;
+                result.Add(tempInvoice);
+            }
+            return Ok(result);
         }
         [HttpGet("toCreate")]
         public async Task<ActionResult<IEnumerable<THoaDonBan>>> GetInvoiceToCreate()
@@ -116,6 +134,7 @@ namespace _api.Controllers
                     MaSp = detail.MaSp,
                     Slban = detail.Slban,
                     KhuyenMai = detail.KhuyenMai,
+                    ThanhTien = detail.ThanhTien,
                 };
                 await _context.TChiTietHdbs.AddAsync(invoiceDetail);
             }
